@@ -9,8 +9,11 @@ ENV PATH="/code/.venv/bin:$PATH"
 COPY pyproject.toml .python-version uv.lock ./
 RUN uv sync --locked
 
+RUN uv add --dev pgcli
+
+
 # RUN pip install pandas pyarrow
 
-COPY pipeline.py . 
+# COPY pipeline.py . 
 
-ENTRYPOINT ["python", "pipeline.py"]
+# ENTRYPOINT ["python", "pipeline.py"]
