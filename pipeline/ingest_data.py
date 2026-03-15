@@ -3,7 +3,7 @@
 
 # In[1]:
 
-
+import click
 import pandas as pd
 from sqlalchemy import create_engine
 from tqdm.auto import tqdm
@@ -74,10 +74,19 @@ parse_dates = [
 
 
 # In[9]:
+@click.command()
+@click.option('--pg-user', default='root', help='PostgreSQL user')
+@click.option('--pg-pass', default='root', help='PostgreSQL password')
+@click.option('--pg-host', default='localhost', help='PostgreSQL host')
+@click.option('--pg-port', default=5432, type=int, help='PostgreSQL port')
+@click.option('--pg-db', default='ny_taxi', help='PostgreSQL database name')
+@click.option('--year', default=2021, type=int, help='Year of the data')
+@click.option('--month', default=1, type=int, help='Month of the data')
+@click.option('--target-table', default='yellow_taxi_data', help='Target table name')
+@click.option('--chunksize', default=100000, type=int, help='Chunk size for reading CSV')
 
 
-
-def run():
+def run(pg_user, pg_pass, pg_host, pg_port, pg_db, year, month, target_table, chunksize):
     pg_user = 'root'
     pg_pass = 'root'
     pg_host = 'localhost'
@@ -87,7 +96,7 @@ def run():
     year = 2021
     month = 1
 
-    target_table = 'yellow_taxi_data'
+    target_table = 'yellow_taxi_data_2021_1'
 
     chunksize = 100000
 
@@ -113,7 +122,7 @@ def run():
                 if_exists='replace'
             )
             first = False
-            
+
         df_chunk.to_sql(
             name=target_table, 
             con=engine, 
